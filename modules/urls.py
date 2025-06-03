@@ -1,7 +1,9 @@
 # modules/urls.py
-from django.urls import path
-from .views import ModuleListCreateView
 
-urlpatterns = [
-    path('modules/', ModuleListCreateView.as_view(), name='module-list-create'),
-]
+from rest_framework.routers import DefaultRouter
+from modules.views import ModuleViewSet
+
+router = DefaultRouter()
+router.register(r'modules', ModuleViewSet, basename='module')
+
+urlpatterns = router.urls
