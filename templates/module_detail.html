@@ -1,8 +1,17 @@
-<!-- templates/module_detail.html -->
+<!-- templates/modules/module_detail.html -->
 
 {% extends "base.html" %}
 {% block title %}{{ module.title }} — EduModules{% endblock %}
+
 {% block content %}
+<!-- Breadcrumbs -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'module-list' %}">Модули</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ module.title }}</li>
+    </ol>
+</nav>
+
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <div class="card shadow-sm mb-4">

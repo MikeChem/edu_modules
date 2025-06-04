@@ -1,12 +1,21 @@
-<!-- templates/module_list.html -->
+<!-- templates/modules/module_list.html -->
 
 {% extends "base.html" %}
-{% block title %}Модули — Платформа EduModules{% endblock %}
+{% block title %}Модули — EduModules{% endblock %}
+
 {% block content %}
 <h2 class="mb-4">Доступные модули</h2>
 
+<form method="get" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="q" placeholder="Поиск по модулям..." class="form-control"
+               value="{{ request.GET.q }}">
+        <button class="btn btn-outline-secondary" type="submit">🔍</button>
+    </div>
+</form>
+
 <div class="row g-4">
-    {% for module in modules %}
+    {% for module in page_obj or modules %}
     <div class="col-md-6 col-lg-4">
         <div class="card shadow-sm h-100">
             <div class="card-body">
@@ -25,4 +34,35 @@
     <p>Нет доступных модулей.</p>
     {% endfor %}
 </div>
+
+<!-- Пагинация -->
+{% if page_obj.has_other_pages %}
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1&q={{ request.GET.q }}">&laquo;</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}">&lsaquo;</a>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+        <li class="page-item {% if num == page_obj.number %}active{% endif %}">
+            <a class="page-link" href="?page={{ num }}&q={{ request.GET.q }}">{{ num }}</a>
+        </li>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}">&rsaquo;</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&q={{ request.GET.q }}">&raquo;</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
 {% endblock %}

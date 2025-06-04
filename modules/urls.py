@@ -1,15 +1,21 @@
-# modules/urls.py
-
-from django.urls import path
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from modules.views import ModuleViewSet, module_list, module_detail
+
+from modules.views import (
+    CourseViewSet,
+    ModuleViewSet,
+    LessonViewSet,
+    TestViewSet,
+    UserProgressViewSet,
+)
 
 router = DefaultRouter()
-router.register(r'api/modules', ModuleViewSet, basename='module')
+router.register(r'courses', CourseViewSet, basename='course')
+router.register(r'modules', ModuleViewSet, basename='module')
+router.register(r'lessons', LessonViewSet, basename='lesson')
+router.register(r'tests', TestViewSet, basename='test')
+router.register(r'user-progress', UserProgressViewSet, basename='userprogress')
 
 urlpatterns = [
-    path('', module_list, name='module-list'),
-    path('<int:pk>/', module_detail, name='module-detail'),
+    path('', include(router.urls)),
 ]
-
-urlpatterns += router.urls
