@@ -1,22 +1,23 @@
 # modules/views.py
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+
 from rest_framework import viewsets
 from modules.models import Module
 from modules.serializers import ModuleSerializer
-
-class ModuleListCreateView(APIView):
-    def get(self, request):
-        return Response({"message": "Список модулей будет здесь"}, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        return Response({"message": "Создание модуля"}, status=status.HTTP_201_CREATED)
 
 
 class ModuleViewSet(viewsets.ModelViewSet):
     queryset = Module.objects.all()
     serializer_class = ModuleSerializer
+    # permission_classes = [IsAuthenticatedOrReadOnly]  ← можно добавить позже
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+def module_list(request):
+    modules = Module.objects.all()
+    return render(request, 'module_list.html', {'modules': modules})
+
+
+def module_detail(request, pk):
+    module = Module.objects.get(pk=pk)
+    return render(request, 'module_detail.html', {'module': module})

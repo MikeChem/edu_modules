@@ -1,0 +1,28 @@
+<!-- templates/module_list.html -->
+
+{% extends "base.html" %}
+{% block title %}Модули — Платформа EduModules{% endblock %}
+{% block content %}
+<h2 class="mb-4">Доступные модули</h2>
+
+<div class="row g-4">
+    {% for module in modules %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ module.title }}</h5>
+                <p class="card-text text-muted">{{ module.description|truncatechars:100 }}</p>
+                <p class="card-text">
+                    <small class="text-body-secondary">
+                        Автор: {{ module.author.email }}
+                    </small>
+                </p>
+                <a href="{% url 'module-detail' module.id %}" class="btn btn-primary stretched-link">Посмотреть</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>Нет доступных модулей.</p>
+    {% endfor %}
+</div>
+{% endblock %}
