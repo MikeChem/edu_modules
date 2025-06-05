@@ -6,23 +6,18 @@ from django.db import models
 
 class User(AbstractUser):
     class Role(models.TextChoices):
-        STUDENT = 'student', 'Студент'
-        TEACHER = 'teacher', 'Преподаватель'
-        ADMIN = 'admin', 'Администратор'
+        STUDENT = "student", "Студент"
+        TEACHER = "teacher", "Преподаватель"
+        ADMIN = "admin", "Администратор"
 
-    email = models.EmailField('Email', unique=True)
-    phone = models.CharField('Телефон', max_length=20, blank=True, null=True)
-    avatar = models.ImageField('Аватар', upload_to='avatars/', blank=True, null=True)
-    bio = models.TextField('О себе', blank=True, null=True)
-    role = models.CharField(
-        'Роль',
-        max_length=20,
-        choices=Role.choices,
-        default=Role.STUDENT
-    )
+    email = models.EmailField("Email", unique=True)
+    phone = models.CharField("Телефон", max_length=20, blank=True, null=True)
+    avatar = models.ImageField("Аватар", upload_to="avatars/", blank=True, null=True)
+    bio = models.TextField("О себе", blank=True, null=True)
+    role = models.CharField("Роль", max_length=20, choices=Role.choices, default=Role.STUDENT)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
 
     @property
     def is_student(self):
@@ -37,5 +32,5 @@ class User(AbstractUser):
         return self.role == self.Role.ADMIN
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"

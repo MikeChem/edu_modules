@@ -1,12 +1,14 @@
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
 from django.shortcuts import render
 from rest_framework import viewsets
 
-from modules.models import Course, Module, Lesson, Test, UserProgress
-from modules.serializers import CourseSerializer, ModuleSerializer, LessonSerializer, TestSerializer, UserProgressSerializer
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q
+from modules.models import Course, Lesson, Module, Test, UserProgress
+from modules.serializers import (CourseSerializer, LessonSerializer, ModuleSerializer, TestSerializer,
+                                 UserProgressSerializer)
 
 # === API ViewSets ===
+
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
@@ -42,18 +44,17 @@ class UserProgressViewSet(viewsets.ModelViewSet):
 
 # === HTML Views (Template-based) ===
 
+
 # modules/views.py
 def module_list(request):
-    query = request.GET.get('q')
+    query = request.GET.get("q")
     modules_list = Module.objects.all()
 
     if query:
-        modules_list = modules_list.filter(
-            Q(title__icontains=query) | Q(description__icontains=query)
-        )
+        modules_list = modules_list.filter(Q(title__icontains=query) | Q(description__icontains=query))
 
     paginator = Paginator(modules_list, 6)  # 6 модулей на странице
-    page = request.GET.get('page')
+    page = request.GET.get("page")
 
     try:
         modules = paginator.page(page)
@@ -62,9 +63,9 @@ def module_list(request):
     except EmptyPage:
         modules = paginator.page(paginator.num_pages)
 
-    return render(request, 'modules/module_list.html', {'modules': modules})
+    return render(request, "modules/module_list.html", {"modules": modules})
 
 
 def module_detail(request, pk):
     module = Module.objects.get(pk=pk)
-    return render(request, 'modules/module_detail.html', {'module': module})
+    return render(request, "modules/module_detail.html", {"module": module})
