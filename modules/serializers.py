@@ -75,29 +75,38 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class ModuleSerializer(serializers.ModelSerializer):
-    lessons = LessonSerializer(many=True)
+    lessons = LessonSerializer(many=True, required=False)  # ← required=False
 
     class Meta:
         model = Module
         fields = ['id', 'title', 'description', 'lessons']
+        read_only_fields = ['id']
 
     def create(self, validated_data):
-        lessons_data = validated_data.pop('lessons')
+        lessons_data = validated_data.pop('lessons', [])  # ← безопасное извлечение
+
         module = Module.objects.create(**validated_data)
+
         for lesson_data in lessons_data:
-            materials_data = lesson_data.pop('materials')
-            tests_data = lesson_data.pop('tests')
+            materials_data = lesson_data.pop('materials', [])
+            tests_data = lesson_data.pop('tests', [])
+
             lesson = Lesson.objects.create(module=module, **lesson_data)
+
             for material in materials_data:
                 Material.objects.create(lesson=lesson, **material)
-            for test in tests_data:
-                questions_data = test.pop('questions')
-                current_test = Test.objects.create(lesson=lesson, **test)
+
+            for test_data in tests_data:
+                questions_data = test_data.pop('questions', [])
+                current_test = Test.objects.create(lesson=lesson, **test_data)
+
                 for question_data in questions_data:
-                    answers_data = question_data.pop('answers')
+                    answers_data = question_data.pop('answers', [])
                     question = Question.objects.create(test=current_test, **question_data)
-                    for answer in answers_data:
-                        AnswerOption.objects.create(question=question, **answer)
+
+                    for answer_data in answers_data:
+                        AnswerOption.objects.create(question=question, **answer_data)
+
         return module
 
 
@@ -110,7 +119,8 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         modules_data = validated_data.pop('modules')
-        course = Course.objects.create(**validated_data)
+        # Передай author из request
+        course = Course.objects.create(author=self.context['request'].user, **validated_data)
         for module_data in modules_data:
             lessons_data = module_data.pop('lessons')
             module = Module.objects.create(course=course, **module_data)
