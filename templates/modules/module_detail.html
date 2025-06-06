@@ -1,0 +1,31 @@
+<!-- templates/modules/module_detail.html -->
+
+{% extends "base.html" %}
+{% block title %}{{ module.title }} — EduModules{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'module-list' %}">Модули</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ module.title }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h3>{{ module.title }}</h3>
+            </div>
+            <div class="card-body">
+                <p>{{ module.description }}</p>
+                <hr>
+                <p><strong>Автор:</strong> {{ module.author.email }}</p>
+                <p><strong>Дата создания:</strong> {{ module.created_at|date:"d.m.Y H:i" }}</p>
+                <a href="{% url 'module-list' %}" class="btn btn-outline-primary">← Назад</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
